@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Arel::Visitors::Firebird < Arel::Visitors::ToSql
+class Arel::Visitors::ArFirebird < Arel::Visitors::ToSql
 
   private
 

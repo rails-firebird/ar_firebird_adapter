@@ -1,6 +1,6 @@
-module ActiveRecord::ConnectionAdapters::Firebird::DatabaseStatements
+module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
 
-  delegate :boolean_domain, to: 'ActiveRecord::ConnectionAdapters::FirebirdAdapter'
+  delegate :boolean_domain, to: 'ActiveRecord::ConnectionAdapters::ArFirebirdAdapter'
 
   def execute(sql, name = nil)
     sql = sql.encode(encoding, 'UTF-8')

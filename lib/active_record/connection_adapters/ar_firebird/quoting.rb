@@ -2,7 +2,7 @@
 
 module ActiveRecord
   module ConnectionAdapters
-    module Firebird
+    module ArFirebird
       module Quoting
 
         def unquoted_true

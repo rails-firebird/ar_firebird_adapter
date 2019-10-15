@@ -1,6 +1,6 @@
 module ActiveRecord
   module ConnectionAdapters
-    module Firebird
+    module ArFirebird
       class SqlTypeMetadata < ActiveRecord::ConnectionAdapters::SqlTypeMetadata
 
         def initialize(sql_type: nil, type: nil, limit: nil, precision: nil, scale: nil, **firebird_options)

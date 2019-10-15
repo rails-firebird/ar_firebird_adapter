@@ -61,4 +61,9 @@ describe 'field types' do
     expect(record.field_blob_binary).to eq value
   end
 
+  it 'boolean domain' do
+    record = SisTest.create!(field_integer: '1').reload
+    expect(record.field_integer).to eq 1
+  end
+
 end

@@ -5,7 +5,7 @@ class ActiveRecord::InternalMetadata
     end
 
     def value_name
-      adapter_name == :firebird ? :value_ : :value
+      adapter_name == :ar_firebird ? :value_ : :value
     end
 
     def []=(key, value)
