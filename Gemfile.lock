@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    firebird_adapter (1.0.8)
+    ar_firebird_adapter (1.0.0)
       fb (~> 0.9.0)
-      rails (>= 6)
+      rails (>= 5.2.0, < 6.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -170,12 +170,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ar_firebird_adapter!
   bundler (~> 1.16)
   database_cleaner (~> 1.6)
-  firebird_adapter!
   pry-meta (~> 0.0.10)
   rake (~> 10.0)
   rspec (~> 3.7)
+
+RUBY VERSION
+   ruby 2.5.1p57
 
 BUNDLED WITH
    1.17.2
