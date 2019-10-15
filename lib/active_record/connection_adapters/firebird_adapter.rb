@@ -15,7 +15,6 @@ class ActiveRecord::ConnectionAdapters::FirebirdAdapter < ActiveRecord::Connecti
   ADAPTER_NAME = "Firebird".freeze
   DEFAULT_ENCODING = "Windows-1252".freeze
 
-  include ActiveRecord::ConnectionAdapters::Firebird::Quoting
   include ActiveRecord::ConnectionAdapters::Firebird::DatabaseLimits
   include ActiveRecord::ConnectionAdapters::Firebird::DatabaseStatements
   include ActiveRecord::ConnectionAdapters::Firebird::SchemaStatements

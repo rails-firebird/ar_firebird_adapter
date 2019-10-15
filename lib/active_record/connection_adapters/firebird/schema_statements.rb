@@ -48,7 +48,7 @@ module ActiveRecord::ConnectionAdapters::Firebird::SchemaStatements
   end
 
   def foreign_keys(table_name)
-    result = query(<<-SQL.strip_heredoc, "SCHEMA")
+    result = query(<<~SQL, "SCHEMA")
       WITH FK_FIELDS AS (
         SELECT
           AA2.RDB$RELATION_NAME,

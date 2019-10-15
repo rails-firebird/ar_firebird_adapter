@@ -16,7 +16,15 @@ module ActiveRecord
             firebird_options = {}
           )
           @domain = firebird_options.domain
-          super(name, default, sql_type_metadata, null, table_name, default_function, collation, comment: comment)
+          super(
+            name,
+            default,
+            sql_type_metadata,
+            null,
+            default_function,
+            collation: nil,
+            comment: comment
+          )
         end
       end
     end
