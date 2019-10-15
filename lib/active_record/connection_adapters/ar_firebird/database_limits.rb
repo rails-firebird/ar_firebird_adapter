@@ -1,4 +1,4 @@
-module ActiveRecord::ConnectionAdapters::Firebird
+module ActiveRecord::ConnectionAdapters::ArFirebird
   module DatabaseLimits
 
     def table_alias_length

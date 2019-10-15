@@ -18,6 +18,8 @@ services:
     volumes:
       - firebird:/firebird
       - ./db:/firebird/data
+    ports:
+      - "5050:3050"
 
 volumes:
   gems:
