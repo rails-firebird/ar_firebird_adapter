@@ -1,4 +1,4 @@
-module ActiveRecord::ConnectionAdapters::Firebird::SchemaStatements
+module ActiveRecord::ConnectionAdapters::ArFirebird::SchemaStatements
 
   def tables(_name = nil)
     @connection.table_names
@@ -115,7 +115,7 @@ private
 
   def new_column_from_field(table_name, field)
     type_metadata = fetch_type_metadata(field["sql_type"], field)
-    ActiveRecord::ConnectionAdapters::Firebird::FbColumn.new(
+    ActiveRecord::ConnectionAdapters::ArFirebird::FbColumn.new(
       field["name"],
       field["default"],
       type_metadata,
@@ -129,12 +129,12 @@ private
   end
 
   def fetch_type_metadata(sql_type, field = "")
-    if field['domain'] == ActiveRecord::ConnectionAdapters::FirebirdAdapter.boolean_domain[:name]
+    if field['domain'] == ActiveRecord::ConnectionAdapters::ArFirebirdAdapter.boolean_domain[:name]
       cast_type = lookup_cast_type("boolean")
     else
       cast_type = lookup_cast_type(sql_type)
     end
-    ActiveRecord::ConnectionAdapters::Firebird::SqlTypeMetadata.new(
+    ActiveRecord::ConnectionAdapters::ArFirebird::SqlTypeMetadata.new(
       sql_type: sql_type,
       type: cast_type.type,
       precision: cast_type.precision,

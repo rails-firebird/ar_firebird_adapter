@@ -1,13 +1,15 @@
-# FirebirdAdapter
+# ArFirebirdAdapter
 
-ActiveRecord Firebird Adapter for Rails 5.
+ActiveRecord Firebird Adapter for Rails 5 adn 6.
+
+This repository is a fork of: https://github.com/FabioMR/firebird_adapter
 
 ## Installation
 
 Add in your Gemfile:
 
 ```ruby
-gem 'firebird_adapter'
+gem 'ar_firebird_adapter'
 ```
 
 And then execute:
@@ -20,7 +22,7 @@ Configure your database.yml:
 
 ```ruby
 development:
-  adapter: firebird
+  adapter: ar_firebird
   host: localhost
   database: db/development.fdb
   username: SYSDBA

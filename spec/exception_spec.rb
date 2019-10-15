@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'exception' do
 
   before(:all) do
-    @initial_encoding ||= ActiveRecord::Base.connection_config[:encoding] || ActiveRecord::ConnectionAdapters::FirebirdAdapter::DEFAULT_ENCODING
+    @initial_encoding ||= ActiveRecord::Base.connection_config[:encoding] || ActiveRecord::ConnectionAdapters::ArFirebirdAdapter::DEFAULT_ENCODING
     ActiveRecord::Base.establish_connection(ActiveRecord::Base.connection_config.merge(encoding: 'Windows-1252'))
   end
 

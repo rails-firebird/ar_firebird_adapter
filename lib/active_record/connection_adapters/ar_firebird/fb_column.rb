@@ -1,6 +1,6 @@
 module ActiveRecord
   module ConnectionAdapters
-    module Firebird
+    module ArFirebird
       class FbColumn < ActiveRecord::ConnectionAdapters::Column # :nodoc:
 
         attr_reader :domain

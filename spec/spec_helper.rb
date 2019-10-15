@@ -5,12 +5,12 @@ require 'rails'
 require 'active_record'
 
 ActiveRecord::Base.establish_connection(
-  adapter:  'firebird',
+  adapter:  'ar_firebird',
   username: 'SYSDBA',
   password: 'masterkey',
   host: 'db',
   database: '/firebird/data/example.fdb',
-  encoding: 'UTF-8',
+  encoding: 'UTF-8'
 )
 
 class SisTest < ActiveRecord::Base

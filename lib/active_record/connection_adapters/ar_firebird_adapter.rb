@@ -1,24 +1,24 @@
 require 'fb'
 
-require 'active_record/connection_adapters/firebird/connection'
-require 'active_record/connection_adapters/firebird/database_limits'
-require 'active_record/connection_adapters/firebird/database_statements'
-require 'active_record/connection_adapters/firebird/schema_statements'
-require 'active_record/connection_adapters/firebird/sql_type_metadata'
-require 'active_record/connection_adapters/firebird/fb_column'
-require 'active_record/connection_adapters/firebird/quoting'
+require 'active_record/connection_adapters/ar_firebird/connection'
+require 'active_record/connection_adapters/ar_firebird/database_limits'
+require 'active_record/connection_adapters/ar_firebird/database_statements'
+require 'active_record/connection_adapters/ar_firebird/schema_statements'
+require 'active_record/connection_adapters/ar_firebird/sql_type_metadata'
+require 'active_record/connection_adapters/ar_firebird/fb_column'
+require 'active_record/connection_adapters/ar_firebird/quoting'
 
-require 'arel/visitors/firebird'
+require 'arel/visitors/ar_firebird'
 
-class ActiveRecord::ConnectionAdapters::FirebirdAdapter < ActiveRecord::ConnectionAdapters::AbstractAdapter
+class ActiveRecord::ConnectionAdapters::ArFirebirdAdapter < ActiveRecord::ConnectionAdapters::AbstractAdapter
 
-  ADAPTER_NAME = "Firebird".freeze
+  ADAPTER_NAME = "ArFirebird".freeze
   DEFAULT_ENCODING = "Windows-1252".freeze
 
-  include ActiveRecord::ConnectionAdapters::Firebird::DatabaseLimits
-  include ActiveRecord::ConnectionAdapters::Firebird::DatabaseStatements
-  include ActiveRecord::ConnectionAdapters::Firebird::SchemaStatements
-  include ActiveRecord::ConnectionAdapters::Firebird::Quoting
+  include ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseLimits
+  include ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
+  include ActiveRecord::ConnectionAdapters::ArFirebird::SchemaStatements
+  include ActiveRecord::ConnectionAdapters::ArFirebird::Quoting
 
 
 
@@ -39,7 +39,7 @@ class ActiveRecord::ConnectionAdapters::FirebirdAdapter < ActiveRecord::Connecti
     timestamp:   { name: 'timestamp' },
     date:        { name: 'date' },
     binary:      { name: 'blob' },
-    boolean:     { name: ActiveRecord::ConnectionAdapters::FirebirdAdapter.boolean_domain[:name] }
+    boolean:     { name: ActiveRecord::ConnectionAdapters::ArFirebirdAdapter.boolean_domain[:name] }
   }
 
   def native_database_types
@@ -47,7 +47,7 @@ class ActiveRecord::ConnectionAdapters::FirebirdAdapter < ActiveRecord::Connecti
   end
 
   def arel_visitor
-    @arel_visitor ||= Arel::Visitors::Firebird.new(self)
+    @arel_visitor ||= Arel::Visitors::ArFirebird.new(self)
   end
 
   def prefetch_primary_key?(table_name = nil)
