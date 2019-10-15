@@ -1,20 +1,6 @@
 module ActiveRecord::ConnectionAdapters::Firebird::DatabaseStatements
 
-  def native_database_types
-    {
-      primary_key: 'integer not null primary key',
-      string:      { name: 'varchar', limit: 255 },
-      text:        { name: 'blob sub_type text' },
-      integer:     { name: 'integer' },
-      float:       { name: 'float' },
-      decimal:     { name: 'decimal' },
-      datetime:    { name: 'timestamp' },
-      timestamp:   { name: 'timestamp' },
-      date:        { name: 'date' },
-      binary:      { name: 'blob' },
-      boolean:     { name: 'smallint' }
-    }
-  end
+  delegate :boolean_domain, to: 'ActiveRecord::ConnectionAdapters::FirebirdAdapter'
 
   def execute(sql, name = nil)
     sql = sql.encode(encoding, 'UTF-8')
@@ -35,22 +21,24 @@ module ActiveRecord::ConnectionAdapters::Firebird::DatabaseStatements
 
     log(sql, name, binds, type_casted_binds) do
       ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        result = @connection.execute(sql, *type_casted_binds)
-        if result.is_a?(Fb::Cursor)
-          fields = result.fields.map(&:name)
-          rows = result.fetchall.map do |row|
-            row.map do |col|
-              col.encode('UTF-8', @connection.encoding) rescue col
+        begin
+          result = @connection.execute(sql, *type_casted_binds)
+          if result.is_a?(Fb::Cursor)
+            fields = result.fields.map(&:name)
+            rows = result.fetchall.map do |row|
+              row.map do |col|
+                col.encode('UTF-8', @connection.encoding) rescue col
+              end
             end
-          end
 
-          result.close
-          ActiveRecord::Result.new(fields, rows)
-        else
-          result
+            result.close
+            ActiveRecord::Result.new(fields, rows)
+          else
+            result
+          end
+        rescue Exception => e
+          raise e.message.encode('UTF-8', @connection.encoding)
         end
-      rescue Exception => e
-        raise e.message.encode('UTF-8', @connection.encoding)
       end
     end
   end

@@ -1,52 +1,57 @@
+# frozen_string_literal: true
+
 class Arel::Visitors::Firebird < Arel::Visitors::ToSql
 
   private
 
-  def visit_Arel_Nodes_SelectCore(o, collector, select_statement)
-    collector << 'SELECT'
-
-    visit_Arel_Nodes_SelectOptions(select_statement, collector)
-
-    collector = maybe_visit o.top, collector
-
-    collector = maybe_visit o.set_quantifier, collector
-
-    collect_nodes_for o.projections, collector, SPACE
-
-    if o.source && !o.source.empty?
-      collector << ' FROM '
-      collector = visit o.source, collector
+  def visit_Arel_Nodes_SelectStatement o, collector
+    if o.with
+      collector = visit o.with, collector
+      collector << ' '
     end
 
-    collect_nodes_for o.wheres, collector, WHERE, AND
-    collect_nodes_for o.groups, collector, GROUP_BY
-    unless o.havings.empty?
-      collector << ' HAVING '
-      inject_join o.havings, collector, AND
+    collector = o.cores.inject(collector) do |c, x|
+      visit_Arel_Nodes_SelectCore(x, c, o)
     end
-    collect_nodes_for o.windows, collector, WINDOW
+
+    unless o.orders.empty?
+      collector << ' ORDER BY '
+      o.orders.each_with_index do |x, i|
+        collector << ', ' unless i == 0
+        collector = visit(x, collector)
+      end
+    end
 
     collector
   end
 
-  def visit_Arel_Nodes_SelectStatement o, collector
-    if o.with
-      collector = visit o.with, collector
-      collector << SPACE
+  def visit_Arel_Nodes_SelectCore(core, collector, o)
+    # We need to use the Arel::Nodes::SelectCore `core`
+    # as well as Arel::Nodes::SelectStatement `o` in
+    # contradiction to the super class because we access
+    # the `visit_Arel_Nodes_SelectOptions` method because
+    # we need to set our limit and offset in the select
+    # clause (Firebird specific SQL)
+    collector << 'SELECT'
+
+    visit_Arel_Nodes_SelectOptions(o, collector)
+
+    collector = maybe_visit core.set_quantifier, collector
+
+    collect_nodes_for core.projections, collector, ' '
+
+    if core.source && !core.source.empty?
+      collector << ' FROM '
+      collector = visit core.source, collector
     end
 
-    collector = o.cores.inject(collector) { |c,x|
-      visit_Arel_Nodes_SelectCore(x, c, o)
-    }
-
-    unless o.orders.empty?
-      collector << ORDER_BY
-      len = o.orders.length - 1
-      o.orders.each_with_index { |x, i|
-        collector = visit(x, collector)
-        collector << COMMA unless len == i
-      }
+    collect_nodes_for core.wheres, collector, ' WHERE ', ' AND '
+    collect_nodes_for core.groups, collector, ' GROUP BY '
+    unless core.havings.empty?
+      collector << ' HAVING '
+      inject_join core.havings, collector, ' AND '
     end
+    collect_nodes_for core.windows, collector, ' WINDOW '
 
     collector
   end
