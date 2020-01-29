@@ -1,7 +1,7 @@
 class ActiveRecord::InternalMetadata
   class << self
     def adapter_name
-      connection.adapter_name.downcase.to_sym
+      connection.adapter_name.underscore.to_sym
     end
 
     def value_name

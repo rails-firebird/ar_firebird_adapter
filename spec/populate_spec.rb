@@ -35,4 +35,10 @@ describe 'populate' do
     expect(record).not_to be_persisted
   end
 
+  it 'creates with nested attributes' do
+    record = SisTest.create({field_varchar: "Some random text", sis_test_connections_attributes: [{text: "Ever tried, ever failed, don't matter, try again, fail again, fail better"}]})
+    expect(record).to be_persisted
+    expect(record.sis_test_connections).to be_present
+  end
+
 end

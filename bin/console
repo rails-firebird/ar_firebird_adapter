@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "ar_firebird_adapter"
-
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
+require_relative "../lib/active_record/connection_adapters/ar_firebird_adapter"
 
 # (If you use this, don't forget to add pry to your Gemfile!)
 # require "pry"
