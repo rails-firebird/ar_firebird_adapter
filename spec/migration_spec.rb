@@ -135,4 +135,33 @@ describe 'migration' do
     expect { ActiveRecord::Migration.remove_foreign_key :sis_test, name: 'foreign_key_' }.not_to raise_error
   end
 
+  it 'change column alter type' do
+    # First we have to create a table with a column
+    # Unfortunatly this is testing something else too...
+    create_table do |t|
+      t.integer :field_to_be_changed
+    end
+    ActiveRecord::Migration.class_eval do
+      change_column :records, :field_to_be_changed, "varchar(255)"
+    end
+
+    record = Record.create! field_to_be_changed: "String this time!"
+    expect(record.reload.field_to_be_changed).to eq "String this time!"
+  end
+
+  it 'change column alter limit' do
+    # First we have to create a table with a column
+    # Unfortunatly this is testing something else too...
+    create_table do |t|
+      t.string :field_to_be_changed
+    end
+    ActiveRecord::Migration.class_eval do
+      change_column :records, :field_to_be_changed, :string, limit: 500
+    end
+
+    long_string = (1..250).to_a.join('')[0..499]
+    record = Record.create! field_to_be_changed: long_string
+    expect(record.reload.field_to_be_changed).to eq long_string
+  end
+
 end

@@ -107,6 +107,21 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::SchemaStatements
     end
   end
 
+  def change_column(table_name, column_name, type, options = {}) #:nodoc:
+    clear_cache!
+    type = type_to_sql(type)
+    column = column_definitions(table_name.to_sym).find {|column| column["name"] == column_name.to_s }
+    if options[:limit]
+      type = "#{type.gsub(/\(.*\)/,'')}(#{options[:limit]})"
+    end
+
+    sql = []
+    if type != column["sql_type"]
+      sql << "ALTER COLUMN #{column["name"]} TYPE #{type}"
+    end
+    execute "ALTER TABLE #{table_name} #{sql.join(', ')}" if sql.any?
+  end
+
 private
 
   def column_definitions(table_name)
@@ -143,5 +158,6 @@ private
       field: field
     )
   end
+
 
 end
