@@ -164,4 +164,20 @@ describe 'migration' do
     expect(record.reload.field_to_be_changed).to eq long_string
   end
 
+  it 'remove column' do
+    # First we have to create a table with a column
+    # Unfortunatly this is testing something else too...
+    create_table do |t|
+      t.string :default_field
+      t.string :field_to_be_removed
+    end
+    ActiveRecord::Migration.class_eval do
+      remove_column :records, :field_to_be_removed
+    end
+
+    expect {
+      Record.create! default_field: "Some Value", field_to_be_removed: nil
+    }.to raise_error
+  end
+
 end
