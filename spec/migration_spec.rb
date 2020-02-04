@@ -101,7 +101,7 @@ describe 'migration' do
     end
 
     record = Record.create!(field_date: DateTime.new(2018, 1, 1, 10))
-    expect(record.reload.field_date).to eq DateTime.new(2018, 1, 1, 10)
+    expect(record.reload.field_date).to eq DateTime.new(2018, 1, 1)
   end
 
   it 'binary' do
@@ -131,8 +131,12 @@ describe 'migration' do
   end
 
   it 'foreign keys' do
-    expect { ActiveRecord::Migration.add_foreign_key :sis_test, :sis_test, column: :id_test, primary_key: :id_test, name: 'foreign_key_' }.not_to raise_error
-    expect { ActiveRecord::Migration.remove_foreign_key :sis_test, name: 'foreign_key_' }.not_to raise_error
+    expect do
+      ActiveRecord::Migration.add_foreign_key :sis_test, :sis_test, column: :id_test, primary_key: :id_test, name: 'foreign_key_'
+    end.not_to raise_error
+    expect do
+      ActiveRecord::Migration.remove_foreign_key :sis_test, name: 'foreign_key_'
+    end.not_to raise_error
   end
 
   it 'change column alter type' do

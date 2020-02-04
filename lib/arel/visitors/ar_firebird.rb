@@ -18,7 +18,7 @@ class Arel::Visitors::ArFirebird < Arel::Visitors::ToSql
       collector << ' ORDER BY '
       o.orders.each_with_index do |x, i|
         collector << ', ' unless i == 0
-        collector = visit(x, collector)
+        collector = visit(quote_column_name(x), collector)
       end
     end
 

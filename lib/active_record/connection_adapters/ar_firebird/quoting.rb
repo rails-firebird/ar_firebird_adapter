@@ -29,6 +29,14 @@ module ActiveRecord
         def quoted_date(value)
           super.sub(/(\.\d{6})\z/, $1.to_s.first(5))
         end
+
+        def quote_column_name(column_name)
+          if column_name.is_a?(String) || column_name.is_a?(Symbol)
+            "\"#{column_name.upcase}\""
+          else
+            column_name
+          end
+        end
       end
     end
   end

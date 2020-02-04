@@ -94,4 +94,13 @@ describe 'query' do
     expect(SisTest.where(field_boolean: value).count).to eq 1
   end
 
+  it '#order by' do
+    SisTest.create!(id_test: 1)
+    SisTest.create!(id_test: 2)
+    SisTest.create!(id_test: 3)
+    SisTest.create!(id_test: 4)
+    SisTest.create!(id_test: 5)
+    expect(SisTest.all.order(:id_test).first.id_test).to be 1
+  end
+
 end

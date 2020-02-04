@@ -9,7 +9,7 @@ ActiveRecord::Base.establish_connection(
   username: 'SYSDBA',
   password: 'masterkey',
   host: 'db',
-  database: '/firebird/data/example.fdb',
+  database: '/firebird/data/test.fdb',
   encoding: 'UTF-8'
 )
 

@@ -17,7 +17,8 @@ services:
       - TZ=America/Sao_Paulo
     volumes:
       - firebird:/firebird
-      - ./db:/firebird/data
+      - ./spec/db/example.fdb:/firebird/data/test.fdb
+      - ./db/example.fdb:/firebird/data/example.fdb
     ports:
       - "5050:3050"
 
