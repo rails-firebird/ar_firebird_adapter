@@ -131,6 +131,14 @@ module ActiveRecord
             @connection.columns(table_name)
           end
 
+          def integer_like_primary_key_type(type, options)
+            if type == :bigint || options[:limit] == 8
+              :bigint
+            else
+              :int
+            end
+          end
+
           def new_column_from_field(table_name, field)
             type_metadata = fetch_type_metadata(field["sql_type"], field)
             ActiveRecord::ConnectionAdapters::ArFirebird::FbColumn.new(

@@ -56,8 +56,15 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
   end
 
   def create_table(table_name, **options)
-    super
-
+    super(table_name, options) do |td|
+      yield td if block_given?()
+      # We have to map the columns to check if we have to change the type
+      td.columns.each do |col|
+        if col.options[:limit] && col.type == :integer
+          col.type = :bigint
+        end
+      end
+    end
     if options[:sequence] != false && options[:id] != false
       sequence_name = options[:sequence] || default_sequence_name(table_name)
       create_sequence(sequence_name)

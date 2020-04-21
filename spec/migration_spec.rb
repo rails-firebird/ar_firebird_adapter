@@ -59,6 +59,12 @@ describe 'migration' do
     expect(record.reload.field_integer).to eq 99
   end
 
+  it 'big integer' do
+    create_table do |t|
+      t.integer :test_with_limit, limit: 8
+    end
+  end
+
   it 'float' do
     create_table do |t|
       t.float :field_float
