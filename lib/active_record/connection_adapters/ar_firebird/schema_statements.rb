@@ -112,9 +112,10 @@ module ActiveRecord
 
         def change_column(table_name, column_name, type, options = {}) #:nodoc:
           clear_cache!
-          type = type_to_sql(type)
+          type = (options[:limit] == 8 && type == :integer) ? "bigint" : type_to_sql(type, **options)
+
           column = column_definitions(table_name.to_sym).find {|column| column["name"] == column_name.to_s }
-          if options[:limit]
+          if options[:limit] &&  type != "bigint"
             type = "#{type.gsub(/\(.*\)/,'')}(#{options[:limit]})"
           end
 
@@ -123,6 +124,12 @@ module ActiveRecord
             sql << "ALTER COLUMN #{column["name"]} TYPE #{type}"
           end
           execute "ALTER TABLE #{table_name} #{sql.join(', ')}" if sql.any?
+        end
+
+
+        def add_column(table_name, column_name, type, **options)
+          type = (options[:limit] == 8 && type == :integer) ? :bigint : type
+          super(table_name, column_name, type, **options)
         end
 
         private
