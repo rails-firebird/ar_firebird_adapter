@@ -2,6 +2,70 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
 
   delegate :boolean_domain, to: 'ActiveRecord::ConnectionAdapters::ArFirebirdAdapter'
 
+  DEFAULT_INSERT_VALUE = Arel.sql("DEFAULT").freeze
+  private_constant :DEFAULT_INSERT_VALUE
+
+  def default_insert_value(column)
+    DEFAULT_INSERT_VALUE
+  end
+
+  def insert_fixtures_set(fixture_set, tables_to_delete = [])
+    table_deletes = tables_to_delete.map { |table| "DELETE FROM #{quote_table_name(table)}" }
+    statements = table_deletes
+
+    with_multi_statements do
+      disable_referential_integrity do
+        transaction(requires_new: true) do
+          execute_batch(statements, "Fixtures Load")
+        end
+      end
+    end
+    
+    fixture_set.each do |table_name, fixtures|
+      next if fixtures.empty?
+      fixtures.each do |one_fixture|
+        insert_fixture(one_fixture, table_name)
+      end
+    end
+  end
+
+  def build_fixture_sql(fixtures, table_name)
+    columns = schema_cache.columns_hash(table_name)
+
+    values_list = fixtures.map do |fixture|
+      fixture = fixture.stringify_keys
+      unknown_columns = fixture.keys - columns.keys
+      if unknown_columns.any?
+        raise Fixture::FixtureError, %(table "#{table_name}" has no columns named #{unknown_columns.map(&:inspect).join(', ')}.)
+      end
+      columns.map do |name, column|
+        if fixture.key?(name)
+          type = lookup_cast_type_from_column(column)
+          with_yaml_fallback(type.serialize(fixture[name]))
+        else
+          default_insert_value(column)
+        end
+      end
+    end
+
+    table = Arel::Table.new(table_name)
+    manager = Arel::InsertManager.new
+    manager.into(table)
+
+    values = values_list.shift
+    new_values = []
+    columns.each_key.with_index { |column, i|
+      unless values[i].equal?(DEFAULT_INSERT_VALUE)
+        new_values << values[i]
+        manager.columns << table[column]
+      end
+    }
+    values_list << new_values
+
+    manager.values = manager.create_values_list(values_list)
+    visitor.compile(manager.ast)
+  end
+
   def execute(sql, name = nil)
     sql = sql.encode(encoding, 'UTF-8')
 
